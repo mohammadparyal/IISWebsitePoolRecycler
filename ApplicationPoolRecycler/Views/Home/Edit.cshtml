@@ -1,0 +1,104 @@
+﻿@model ApplicationPoolRecycler.Models.ApplicationDetailInfo
+@{
+    ViewBag.Title = Model.SiteName;
+}
+@section Head{
+    <script type="text/javascript">
+        $(function () {
+            $(".connectionStrings").keyup(function () {
+                //Validate($(this).attr('name'));
+                var $parent = $(this).parent().next();
+                $parent.find("img[name='result']").hide();
+                $parent.find(".validate").show();
+                $parent.find(".loader").css("display", "none");
+            });
+            setTimeout(function () {
+                $("#alertInfo").slideUp();
+            }, 1000);
+            $(document).ajaxSuccess(function () {
+                if ($("[isValidated='true']").length == $('table tbody tr').length) {
+                    $("form").submit();
+                }
+            });
+        });
+        function Validate(element, name) {
+            $("#isValidating").val('true');
+            var $textIn = $("input[name='" + name + "']");
+            var $element = $(element);
+            var $parent = $element.parent();
+
+            $element.hide();
+            $parent.find(".loader").css("display", "block");
+            $parent.find("img[name='result']").hide();
+
+            if ($textIn != undefined) {
+                $.post('@Url.Action("ValidateConnectionString")', { connectionString: $textIn.val() }, function (data, status) {
+                $parent.find(".loader").css("display", "none");
+                if (data != "" && data == "1") {
+                    $parent.find("img[name='result']").attr("src", "/Content/Images/correct.png").show();
+                    $parent.attr('isValidated', 'true');
+                } else {
+                    $element.show();
+                    $parent.find("img[name='result']").attr("src", "/Content/Images/invalid.png").show();
+                    $parent.attr('isValidated', 'false');
+                }
+            });
+        }
+    }
+
+    function ValidateForm() {
+        if ($(".validate").is(":visible")) {
+            $(".validate:visible").trigger("click");
+            return false;
+        }
+        return true;
+    }
+    </script>
+    <style>
+        .loader {
+            display: none;
+        }
+    </style>
+}
+
+<h2>Site Name : @Model.SiteName -- Status : @Model.SiteStatus.ToString()</h2>
+@if (TempData["Message"] != null && !string.IsNullOrEmpty(TempData["Message"].ToString())) 
+{ 
+    <div class="alert alert-success" role="alert" id="alertInfo">@TempData["Message"]</div>
+}
+<form action="@Url.Action("Edit")" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-md-1">Name</th>
+                <th class="col-md-10">Connection String</th>
+                <th class="col-md-1">Action</th>
+            </tr>
+        </thead>
+        @foreach (var each in Model.ConnectionStrings)
+        {
+            <tr>
+                <td class="col-md-2">@each.Key</td>
+                <td class="col-md-9">
+                    <input name="@each.Key" class="connectionStrings form-control" value="@each.Value" /></td>
+                <td class="col-md-1">
+                    <a href="javascript:void(0)" onclick="Validate(this,'@each.Key')" data-name="@each.Key" class="validate">Validate</a>
+                    <img src="~/Content/Images/loader.gif" class="loader" />
+                    <img name="result" style="display: none" width="24" height="24" />
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="form-group">
+        <a class="btn btn-default" href="/">Back</a>
+        @if (Model.ConnectionStrings.Count > 0)
+        { 
+            <button type="submit" class="btn btn-default" name="name" value="Save" id="SaveBtn" onclick="return ValidateForm();">Submit</button>
+        }
+    </div>
+    <input type="hidden" name="siteName" value="@Model.SiteName" />
+    <input type="hidden" value="false" id="isValidating" />
+</form>
+
+
+

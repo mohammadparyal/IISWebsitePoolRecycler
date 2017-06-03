@@ -1,0 +1,8 @@
+﻿@{
+    ViewBag.Title = "Result";
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.AppPoolName))
+{
+    <h3>@string.Format("Configuration has been changed Successfully For '{0}'", ViewBag.AppPoolName)</h3>
+}
