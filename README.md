@@ -1,5 +1,5 @@
 # IIS Websites Application Pools Recycler
-Recyle websites application pools and change database connectionstrings
+Recycle websites application pools and change database connectionstrings
 
 > With this website tool, you can:
 
