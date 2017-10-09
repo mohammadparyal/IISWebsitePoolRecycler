@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/mohammadparyal/IISWebsitePoolRecycler.svg?branch=master)](https://travis-ci.org/mohammadparyal/IISWebsitePoolRecycler)
 
+[![Coverage Status](https://coveralls.io/repos/github/mohammadparyal/IISWebsitePoolRecycler/badge.svg?branch=master)](https://coveralls.io/github/mohammadparyal/IISWebsitePoolRecycler?branch=master)
+
 # IIS Websites Application Pools Recycler
 Recycle websites application pools and change database connectionstrings
 
